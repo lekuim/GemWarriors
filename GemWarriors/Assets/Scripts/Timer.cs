@@ -18,15 +18,16 @@ public class Timer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!(timeLeft > 0))
-        {
-            timeLeft = timerInterval;
-            timerBar.fillAmount = 1;
-        }
         if (timerBar.enabled)
         {
             timeLeft -= Time.deltaTime;
             timerBar.fillAmount = timeLeft / timerInterval;
         }
+    }
+
+    public void resetTimer()
+    {
+        timeLeft = timerInterval;
+        timerBar.fillAmount = 1;
     }
 }

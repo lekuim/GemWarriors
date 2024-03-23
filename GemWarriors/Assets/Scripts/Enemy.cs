@@ -27,6 +27,10 @@ public class Enemy : MonoBehaviour
     {
         Destroy(GameObject.FindGameObjectWithTag("eState"));
     }
+    public void killMe()
+    {
+        Destroy(GameObject.FindGameObjectWithTag("enemy"));
+    }
     public void ShowState(int State)
     {
         switch (State)

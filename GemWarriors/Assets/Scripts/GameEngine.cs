@@ -12,57 +12,88 @@ public class GameEngine : MonoBehaviour
     private Player player;
     private int i;
     [SerializeField] private Board board;
-    [SerializeField] private Image TimerLine;
+    [SerializeField] private Timer TimerLine;
     [SerializeField] private TMP_Text attaks;
+    [SerializeField] private TMP_Text getReady;
     public float timeAmount;
 
     private void Start()
     {
         timeAmount = 6;
-        GenerateEnemy();
         i = 0;
         player = FindObjectOfType<Player>();
-        enemy.ShowState(enemy.atkLoop[i]);
-        InvokeRepeating("GenerateAtk", timeAmount, timeAmount + 2); // ќжидани€е врем€ атаки + врем€ на заглушку
+        StartCoroutine(GenerateEnemy());
+
     }
 
-    void GenerateEnemy()
+    IEnumerator GenerateEnemy()
     {
+        GameOnPause();
+        getReady.enabled = true;
+
+
+        yield return new WaitForSeconds(3);
+
+
         int t = Random.Range(0, enemyList.Length);
         Instantiate(enemyList[t]); 
         enemy = FindObjectOfType<Enemy>();
+        enemy.ShowState(enemy.atkLoop[i]);
+        GameOnRun();
+        getReady.enabled = false;
+        InvokeRepeating("GenerateAtk", timeAmount, timeAmount + 2); // ќжидани€е врем€ атаки + врем€ на заглушку
     }
 
     void GenerateAtk()
     {
+
         if (i == enemy.atkLoop.Length - 1)
         {
             i = 0;
         }
         ++i;
-        StartCoroutine(pause());
-            
+        StartCoroutine(Attack());
+
     }
-    IEnumerator pause()
+
+    private void GameOnPause()
     {
-        board.Alternate();
+        TimerLine.resetTimer();
         pauseBoard.SetActive(true);
         board.enabled = false;
-        attaks.enabled = true;
         TimerLine.enabled = false;
+    }
+
+    private void GameOnRun()
+    {
+        pauseBoard.SetActive(false);
+        board.enabled = true;
+        TimerLine.enabled = true;
+    }
+    IEnumerator Attack()
+    {
+        board.Alternate();
+        GameOnPause();
+        attaks.enabled = true;
         CompareAtk();
         enemy.hideState();
         player.hideState();
         enemy.ShowHp();
         player.ShowHp();
         yield return new WaitForSeconds(2f);
-        board.enabled = true;
-        pauseBoard.SetActive(false);
         attaks.enabled = false;
-        TimerLine.enabled = true;
-        Debug.Log("—осто€ние изменилось");
         enemy.ShowState(enemy.atkLoop[i]);
         enemy.ShowHp();
+        GameOnRun();
+        if (enemy.curHp <= 0)
+        {
+            enemy.killMe();
+            enemy.hideState();
+            CancelInvoke();
+            StartCoroutine(GenerateEnemy());
+        }
+
+
 
     }
     // 1->2. 2->3 3->1
