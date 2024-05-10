@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -18,8 +19,13 @@ public class Board : MonoBehaviour
     public Vector2 CurDotPos;
     public int range;
     public Player player;
+    public int numberOfChains;
+    [SerializeField] private Score score;
+
+
     void Start()
     {
+        numberOfChains = 0;
         maxShd = 0;
         allDots = new GameObject[width,height];
         SetUp();
@@ -31,14 +37,17 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < dotsToDestroy.Count; i++)
         {
-            int targetX = (int)dotsToDestroy[i].transform.position.x;
-            int targetY = (int)dotsToDestroy[i].transform.position.y;
+            int targetX = (int)dotsToDestroy[i].transform.localPosition.x;
+            int targetY = (int)dotsToDestroy[i].transform.localPosition.y;
             Destroy(allDots[targetX, targetY].transform.GetChild(0).gameObject);
         }
         dotsToDestroy.Clear();
         CurDot = null;
         CurDotPos = Vector2.zero;
     }
+
+
+
     private void SetUp()
     {
         for (int i = 0; i < width; i++)
@@ -48,16 +57,16 @@ public class Board : MonoBehaviour
                     GetDot(i, j);
             }
         }
+        Vector3 pos = new Vector3(-2.98f, -6.59f, 5f);
+        this.transform.SetPositionAndRotation(pos, Quaternion.identity);
     }
 
     public void GetDot(int i, int j)
     {
         Vector2 tempPos = new Vector2(i, j); // получаем вектор очередной координаты
-        GameObject bacgroundTile = (GameObject)Instantiate(tilePrefab, tempPos, Quaternion.identity);//Instantiate(создаем объект типа tilePrefab, с координамати вектора tempPos, со стандартным наклоном) передаем в bacgroundTile
-        bacgroundTile.transform.parent = this.transform; //Делаем родителем объекта bacgroundTile объект класса Background
-        bacgroundTile.name = "( " + i + "," + j + " )"; //Меняем имя объекта bacgroundTile
 
         int dotToUse = Random.Range(0, dots.Length);//Генерация случайного числа который определит фигуру
+        //ГЕНЕРАЦИЯ ТЕНИ////////////////////////////////
         if (dotToUse == dots.Length - 1)
         {
             if (maxShd >= shadowFactor)
@@ -68,18 +77,28 @@ public class Board : MonoBehaviour
                 maxShd++;
 
         }
-        GameObject dot = Instantiate(dots[dotToUse], tempPos, Quaternion.identity);//Клонирование фигуры с типом dots[dotToUse] в положении tranform, со стандартным поворотом
-        dot.transform.parent = this.transform;
+        ////////////////////////////////////////////////
+
+        GameObject dot = Instantiate(dots[dotToUse], this.transform);//Клонирование фигуры с типом dots[dotToUse] в положении tranform, со стандартным поворотом
+        dot.transform.localPosition = tempPos;
+        //dot.transform.parent = this.transform;
         dot.name = "( " + i + "," + j + " )";
         allDots[i, j] = dot;
     }
+
+
+
+
+
+
 
 
     public void DestroyDots()
     {
         if (dotsToDestroy.Count >= 3) 
         {
-
+             numberOfChains++;
+            score.CheckRank(numberOfChains);
                 switch (dotsToDestroy[0].tag)
                 {
                 case "blue":
@@ -94,21 +113,31 @@ public class Board : MonoBehaviour
                 }
             player.ShowState();
 
+
+
+
             for (int i = 0; i < dotsToDestroy.Count; i++)
             {
-                int targetX = (int)dotsToDestroy[i].transform.position.x;
-                int targetY = (int)dotsToDestroy[i].transform.position.y;
+                int targetX = (int)dotsToDestroy[i].transform.localPosition.x;
+                int targetY = (int)dotsToDestroy[i].transform.localPosition.y;
+
+
                 if (allDots[targetX, targetY].CompareTag("ShadowDot"))
                 {
                     maxShd--;
                 }
+
                 Destroy(allDots[targetX, targetY]);
                 allDots[targetX, targetY] = null;
                 GetDot(targetX, targetY);
             }
+            score.score += dotsToDestroy.Count * 50 * score.multi[score.idRank];
+            score.ShowMove("CHAIN", dotsToDestroy.Count * 50 * score.multi[score.idRank]);
+            score.ShowScr();
             dotsToDestroy.Clear();
             CurDot = null;
             CurDotPos = Vector2.zero;
+
         }
         else
         {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Timer : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Timer : MonoBehaviour
     Image timerBar;
     public float timerInterval = 6f;
     float timeLeft;
+    [SerializeField] TMP_Text sec;
     void Start()
     {
         timerBar = GetComponent<Image>();
@@ -21,6 +23,7 @@ public class Timer : MonoBehaviour
         if (timerBar.enabled)
         {
             timeLeft -= Time.deltaTime;
+            sec.text = timeLeft.ToString("#.###") + "s";
             timerBar.fillAmount = timeLeft / timerInterval;
         }
     }

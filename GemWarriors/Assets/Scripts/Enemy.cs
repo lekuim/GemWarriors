@@ -37,19 +37,20 @@ public class Enemy : MonoBehaviour
         {
             case 1:
                 curState = 1;
-                Instantiate(states[0]);
+                Instantiate(states[0], GameObject.FindGameObjectWithTag("Canvas").transform);
                 break;
             case 2:
                 curState = 2;
-                Instantiate(states[1]);
+                Instantiate(states[1], GameObject.FindGameObjectWithTag("Canvas").transform);
                 break;
             case 3:
                 curState = 3;
-                Instantiate(states[2]);
+                Instantiate(states[2], GameObject.FindGameObjectWithTag("Canvas").transform);
                 break;
             case 4:
-                curState = Random.Range(1, 4);
-                Instantiate(states[curState - 1]);
+                int i = Random.Range(0, 3);
+                curState = i + 1;
+                Instantiate(states[i], GameObject.FindGameObjectWithTag("Canvas").transform);
                 break;
         }
 

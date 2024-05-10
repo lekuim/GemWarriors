@@ -12,6 +12,8 @@ TagManager:
   - state
   - enemy
   - eState
+  - blue
+  - Canvas
   layers:
   - Default
   - TransparentFX

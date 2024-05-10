@@ -14,8 +14,8 @@ public class Dot : MonoBehaviour
     void Start()
     {
         board = FindObjectOfType<Board>();
-        dotX = (int)transform.position.x;
-        dotY = (int)transform.position.y;
+        dotX = (int)transform.localPosition.x;
+        dotY = (int)transform.localPosition.y;
         board.dotsToDestroy = new List<Dot>();
     }
 
@@ -26,7 +26,7 @@ public class Dot : MonoBehaviour
         if (board.enabled)
         {
             board.CurDot = this;
-            board.CurDotPos = this.transform.position;
+            board.CurDotPos = this.transform.localPosition;
             if (!board.dotsToDestroy.Contains(this))
             {
                 board.dotsToDestroy.Add(this);
@@ -43,12 +43,12 @@ public class Dot : MonoBehaviour
 
             if (!board.dotsToDestroy.Contains(this) && thisColor.Equals(curDotColor))
             {
-                board.range = (int)((board.CurDotPos - (Vector2)this.transform.position).magnitude);
-                if (board.range == 1)
+                board.range = (int)((board.CurDotPos - (Vector2)this.transform.localPosition).magnitude);
+                if (board.range <= 1)
                 {
                     board.dotsToDestroy.Add(this);
                     Instantiate(chsdPref, this.transform);
-                    board.CurDotPos = this.transform.position;
+                    board.CurDotPos = this.transform.localPosition;
                 }
             }
         }

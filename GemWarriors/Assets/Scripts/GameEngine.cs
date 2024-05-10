@@ -13,8 +13,8 @@ public class GameEngine : MonoBehaviour
     private int i;
     [SerializeField] private Board board;
     [SerializeField] private Timer TimerLine;
-    [SerializeField] private TMP_Text attaks;
     [SerializeField] private TMP_Text getReady;
+    [SerializeField] private Score score;
     public float timeAmount;
 
     private void Start()
@@ -25,18 +25,16 @@ public class GameEngine : MonoBehaviour
         StartCoroutine(GenerateEnemy());
 
     }
-
     IEnumerator GenerateEnemy()
     {
         GameOnPause();
         getReady.enabled = true;
-
-
+        board.numberOfChains = 0;
+        score.idRank = 0;
+        score.ShowScr();
         yield return new WaitForSeconds(3);
-
-
         int t = Random.Range(0, enemyList.Length);
-        Instantiate(enemyList[t]); 
+        Instantiate(enemyList[t], GameObject.FindGameObjectWithTag("Canvas").transform); 
         enemy = FindObjectOfType<Enemy>();
         enemy.ShowState(enemy.atkLoop[i]);
         GameOnRun();
@@ -74,14 +72,12 @@ public class GameEngine : MonoBehaviour
     {
         board.Alternate();
         GameOnPause();
-        attaks.enabled = true;
         CompareAtk();
         enemy.hideState();
         player.hideState();
         enemy.ShowHp();
         player.ShowHp();
         yield return new WaitForSeconds(2f);
-        attaks.enabled = false;
         enemy.ShowState(enemy.atkLoop[i]);
         enemy.ShowHp();
         GameOnRun();
@@ -92,6 +88,10 @@ public class GameEngine : MonoBehaviour
             CancelInvoke();
             StartCoroutine(GenerateEnemy());
         }
+        if (player.curHp <= 0)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
 
 
 
@@ -99,25 +99,27 @@ public class GameEngine : MonoBehaviour
     // 1->2. 2->3 3->1
     private void CompareAtk()
     {
-        if (enemy.curState == player.curState)
-            return;
-        switch (player.curState)
+
+        if((enemy.curState == 2 && player.curState == 1) || 
+            (enemy.curState == 3 && player.curState == 2) || 
+            (enemy.curState == 1 && player.curState == 3)) //¿“¿ ¿
         {
-            case 1:
-                if (enemy.curState == 2)
-                    enemy.curHp -= 1;
-                break;
-            case 2:
-                if (enemy.curState == 3)
-                    enemy.curHp -= 1;
-                break;
-            case 3:
-                if (enemy.curState == 1)
-                    enemy.curHp -= 1;
-                break;
-            default:
-                player.curHp -= 1;
-                break;
+            enemy.curHp -= 1;
+            score.score += 500 * score.multi[score.idRank];
+            score.ShowMove("ATTACK", 500 * score.multi[score.idRank]);
+            score.ShowScr();
         }
+        else if (enemy.curState == player.curState) // ¡ÀŒ 
+        {
+            score.score += 100 * score.multi[score.idRank];
+            score.ShowMove("BLOCK", 100 * score.multi[score.idRank]);
+            score.ShowScr();
+        }
+        else
+        {
+            score.ShowMove("MISSED", 0);
+            player.curHp -= 1;
+        }
+
     }
 }
