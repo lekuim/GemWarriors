@@ -1,27 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Board : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int width; // ширина поля
-    public int height; // высота поля
+    [SerializeField] private int width; // ширина поля
+    [SerializeField] private int height; // высота поля
     public int shadowFactor;
-    public int maxShd;
-    public GameObject tilePrefab; // префаб Baground
-    public GameObject[] dots;//Массив из возможный фигу
-    public GameObject[,] allDots;
+    [SerializeField] private int maxShd;
+    [SerializeField] private GameObject tilePrefab; // префаб Baground
+    [SerializeField] private GameObject[] dots;//Массив из возможный фигу
+    private GameObject[,] allDots;
     public List<Dot> dotsToDestroy;
-    public GameEngine engine;
+    [SerializeField] private GameEngine engine;
     public Dot CurDot;
     public Vector2 CurDotPos;
     public int range;
-    public Player player;
-    public int numberOfChains;
+    [SerializeField] private Player player;
     [SerializeField] private Score score;
-
+    public int numberOfChains;
 
     void Start()
     {
@@ -86,13 +83,6 @@ public class Board : MonoBehaviour
         allDots[i, j] = dot;
     }
 
-
-
-
-
-
-
-
     public void DestroyDots()
     {
         if (dotsToDestroy.Count >= 3) 
@@ -102,13 +92,13 @@ public class Board : MonoBehaviour
                 switch (dotsToDestroy[0].tag)
                 {
                 case "blue":
-                    player.SetState(1);
+                    player.curState = 1;
                     break;
                 case "red":
-                    player.SetState(2);
+                    player.curState = 2;
                     break;
                 case "green":
-                    player.SetState(3);
+                    player.curState = 3;
                     break;
                 }
             player.ShowState();
@@ -131,8 +121,8 @@ public class Board : MonoBehaviour
                 allDots[targetX, targetY] = null;
                 GetDot(targetX, targetY);
             }
-            score.score += dotsToDestroy.Count * 50 * score.multi[score.idRank];
-            score.ShowMove("CHAIN", dotsToDestroy.Count * 50 * score.multi[score.idRank]);
+            score.score += dotsToDestroy.Count * 5 * score.multi[score.idRank];
+            score.ShowMove("CHAIN", dotsToDestroy.Count * 5 * score.multi[score.idRank]);
             score.ShowScr();
             dotsToDestroy.Clear();
             CurDot = null;

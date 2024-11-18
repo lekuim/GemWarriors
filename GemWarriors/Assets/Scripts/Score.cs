@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -8,7 +6,7 @@ public class Score : MonoBehaviour
     private string[] ranks;
     public int[] multi;
     public int idRank;
-    public long score;
+    public int score;
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text move;
     private void Start()
@@ -24,7 +22,6 @@ public class Score : MonoBehaviour
     {
         scoreText.text = ranks[idRank] + " | " + score + "\nx" + multi[idRank];
     }
-
     public void ShowMove(string type, int score)
     {
         move.text = type + "\n+" + score;

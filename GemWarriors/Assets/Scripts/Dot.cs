@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +5,11 @@ public class Dot : MonoBehaviour
 {
     // Start is called before the first frame update
     
-
     public GameObject chsdPref;
     private Board board;
     public int dotX;
     public int dotY;
+    
     void Start()
     {
         board = FindObjectOfType<Board>();

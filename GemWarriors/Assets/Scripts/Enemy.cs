@@ -6,12 +6,12 @@ using TMPro;
 public class Enemy : MonoBehaviour
 {
     public int[] atkLoop;
-    public int Hp;
+    [SerializeField] private int Hp;
     public int curHp;
-    public int RectSec;
+    public int rectSec;
     public int curState;
-    public GameObject[] states;
-    [SerializeField]private TMP_Text hpText;
+    [SerializeField] private GameObject[] states;
+    [SerializeField] private TMP_Text hpText;
     private void Start()
     {
         ShowHp();
@@ -21,6 +21,10 @@ public class Enemy : MonoBehaviour
         Destroy(GameObject.FindWithTag("enemyHp"));
         hpText.text = curHp.ToString() + "/" + Hp.ToString();
         Instantiate(hpText, GameObject.Find("Canvas").transform);
+    }
+    public void HideHp()
+    {
+        Destroy(GameObject.FindWithTag("enemyHp"));
     }
 
     public void hideState()

@@ -46,8 +46,5 @@ public class Player : MonoBehaviour
 
     }
 
-    public void SetState(int state)
-    {
-        curState = state;
-    }
+
 }

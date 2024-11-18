@@ -96,9 +96,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atkLoop: 020000000100000003000000040000000200000004000000
-  Hp: 5
-  curHp: 5
-  RectSec: 4
+  Hp: 3
+  curHp: 3
+  rectSec: 5
   curState: 0
   states:
   - {fileID: 954018326291249684, guid: cb837e53e3deffa4ea91dad9a134bde0, type: 3}
